@@ -29,6 +29,7 @@ public class Ball : MonoBehaviour
     public void Awake()
     {
         _initialPosition = transform.position;
+
     }
     private void Update()
     {

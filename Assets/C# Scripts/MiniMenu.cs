@@ -8,6 +8,21 @@ public class MiniMenu : MonoBehaviour
     public GameObject minimenu;
     public bool ispasued = false;
     // Start is called before the first frame update
+
+
+    public void Pasuegame()
+    {
+        minimenu.SetActive(true);
+        Time.timeScale = 0f;
+        ispasued = true;
+    }
+    public void Resumegame()
+    {
+        minimenu.SetActive(false);
+        Time.timeScale = 1f;
+        ispasued = false;
+    }
+
     void Start()
     {
         Resumegame();
@@ -34,17 +49,5 @@ public class MiniMenu : MonoBehaviour
             }
         }
     }
-    public void Pasuegame()
-    {
-        minimenu.SetActive(true);
-        Time.timeScale = 0f;
-        ispasued = true;
-    }
-    public void Resumegame()
-    {
-        minimenu.SetActive(false);
-        Time.timeScale = 1f;
-        ispasued = false;
-    }
-
+  
 }

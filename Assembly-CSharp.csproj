@@ -57,8 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\C# Scripts\MiniMenu.cs" />
-    <Compile Include="Assets\C# Scripts\MainMenu.cs" />
     <Compile Include="Assets\C# Scripts\Ball.cs" />
+    <Compile Include="Assets\C# Scripts\MainMenu.cs" />
+    <Compile Include="Assets\C# Scripts\Ground.cs" />
+    <Compile Include="Assets\C# Scripts\PowerUps.cs" />
+    <Compile Include="Assets\C# Scripts\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
