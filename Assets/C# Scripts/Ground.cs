@@ -8,18 +8,18 @@ public class Ground : MonoBehaviour
 {
     [SerializeField] private GameObject _cloudParticlePrefab;
 
-    public Text Text;
+    public Text Textscore;
+    public float timer;
     bool Hit = false;
     public static bool BackToMain ;
     public int Score = 0;
     string currentScoreKey = "currentScore";
+    string HighestScoreKey = "HighestScoreKey";
 
 
     void Start()
     {
-        print(BackToMain+ " <== ?????????");
-
-        print("Start = Check if true");
+       // GetComponent<Timer>().timerIsRunning = true;
         if (BackToMain)
         {
             PlayerPrefs.SetInt(currentScoreKey, 0);
@@ -40,13 +40,24 @@ public class Ground : MonoBehaviour
             Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
             Score = Score + 1;
             PlayerPrefs.SetInt(currentScoreKey, Score);
+            if (PlayerPrefs.GetInt(HighestScoreKey) < PlayerPrefs.GetInt(currentScoreKey))
+            {
+                PlayerPrefs.SetInt(HighestScoreKey, Score);
+            }
             PlayerPrefs.Save();
-            Text.text = "Score: " + Score.ToString();
+            Textscore.text = "Score: " + Score.ToString();
             Hit = true;
             yield return new WaitForSeconds(2.0f);
 
+
+
+
             string currentSceneName = SceneManager.GetActiveScene().name;
+
+       //     timer = GetComponent<Timer>().timeRemaining;
+        //    GetComponent<Timer>().timerIsRunning = true ;
             SceneManager.LoadScene(currentSceneName);
+ 
         }
 
     }

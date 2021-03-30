@@ -8,19 +8,18 @@ public class Timer : MonoBehaviour
     public float timeRemaining = 10;
     public bool timerIsRunning = false;
     public Text timeText;
-
-    void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
     
 
     void Update()
     {
+         
         if (timerIsRunning)
         {
+        //    timeRemaining = GetComponent<Ground>().timer;
+
             if (timeRemaining > 0)
             {
+
                 timeRemaining -= Time.deltaTime;
                 DisplayTime(timeRemaining);
             }

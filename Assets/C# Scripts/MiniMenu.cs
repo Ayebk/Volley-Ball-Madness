@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MiniMenu : MonoBehaviour
 {
+    
     public GameObject minimenu;
     public bool ispasued = false;
     // Start is called before the first frame update
