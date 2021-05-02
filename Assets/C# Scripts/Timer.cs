@@ -8,11 +8,12 @@ public class Timer : MonoBehaviour
     public float timeRemaining = 10;
     public bool timerIsRunning = false;
     public Text timeText;
-    
 
+  
     void Update()
     {
-         
+        
+
         if (timerIsRunning)
         {
         //    timeRemaining = GetComponent<Ground>().timer;

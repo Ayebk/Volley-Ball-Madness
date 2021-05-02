@@ -6,22 +6,25 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+
     public Text highscore;
-
-    public SpriteRenderer ground;
-
+    
+   
     public void StartGame()
     {
-
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
     }
 
      void Start()
     {
+
+     
+
         Ground.BackToMain = true;
 
-        
+
         highscore.text = "Score : " + PlayerPrefs.GetInt("HighestScoreKey").ToString();
 
 
@@ -30,9 +33,10 @@ public class MainMenu : MonoBehaviour
     }
 
 
-    public void QuitGame()
+    public void SingOut()
     {
-        Application.Quit();
+        SceneManager.LoadScene("LogIn");
+
 
     }
 }

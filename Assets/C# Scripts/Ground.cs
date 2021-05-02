@@ -17,9 +17,13 @@ public class Ground : MonoBehaviour
     string HighestScoreKey = "HighestScoreKey";
 
 
-    void Start()
+     void Start()
     {
-       // GetComponent<Timer>().timerIsRunning = true;
+        SoundManger.PlaySound("Ready");
+        SoundManger.PlaySound("Game");
+
+
+        // GetComponent<Timer>().timerIsRunning = true;
         if (BackToMain)
         {
             PlayerPrefs.SetInt(currentScoreKey, 0);
@@ -36,6 +40,9 @@ public class Ground : MonoBehaviour
         Ball ball = collision.collider.GetComponent<Ball>();
         if (ball != null && Hit == false)
         {
+            SoundManger.PlaySound("Ground");
+            SoundManger.PlaySound("Score");
+
             BackToMain = false;
             Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
             Score = Score + 1;

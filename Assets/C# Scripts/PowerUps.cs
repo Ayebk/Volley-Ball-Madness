@@ -10,6 +10,16 @@ public class PowerUps : MonoBehaviour
   //  public GameObject BallOpponent; // LATER.. FOR KILL POWER UP
     private Vector3 _initialPosition;
     bool powerSpawned = false;
+    private static bool isFire = false;
+
+    [SerializeField] Transform fireParticales;
+
+    // for heavy grow
+    static bool heavy = false;
+    private Vector3 scaleChange;
+    float counter = 0;
+    //
+
     public GameObject[] powerups = new GameObject[4] ;
 
 
@@ -26,6 +36,8 @@ public class PowerUps : MonoBehaviour
     Vector3 lastPosition = Vector3.zero;
 
 
+    //random respwan
+/*
     private void spawnrandom()
     {
         while (!powerSpawned)
@@ -35,12 +47,12 @@ public class PowerUps : MonoBehaviour
             powerSpawned = true;
         }
     }
-
+*/
 
     private void Start() // for stucked new values
     {
-        spawnrandom();
-        ball1.GetComponent<Rigidbody2D>().sharedMaterial.bounciness = 0.6f; // IMPORTENT(this will decide every time) : 
+      //  spawnrandom();      <------- this is for random spwan
+        ball1.GetComponent<Rigidbody2D>().sharedMaterial.bounciness = 0.4f; // IMPORTENT(this will decide every time) : 
                                                                             //when you hit power up heavy, 
                                                                             //the bounciness stuck to the new vlaue so we 
                                                                             //need to start again
@@ -48,12 +60,47 @@ public class PowerUps : MonoBehaviour
         powerups[1] = GameObject.FindGameObjectWithTag("PU_heavy");
         powerups[2] = GameObject.FindGameObjectWithTag("PU_speed");
         powerups[3] = GameObject.FindGameObjectWithTag("PU_double");
+
+        isFire = false;
     }
 
-    void FixedUpdate()
+ 
+
+    private void Update()
     {
-        speed = (ball1.transform.position - lastPosition).magnitude;
-        lastPosition = ball1.transform.position;
+        if (isFire == true)
+        {
+            Vector3 moveDirection = ball1.transform.position;
+
+            // for the fire (place in untiy the fire particles in origin)///
+            fireParticales.position = moveDirection;
+            //
+
+
+           
+        }
+
+
+        print($"this is -----------  {heavy}");
+
+        if (heavy) 
+        {
+            print($"yepp im here");
+            
+            scaleChange = new Vector3(0.003f, 0.003f, 0.000f);
+            ball1.transform.localScale += scaleChange;
+            counter++;
+        }
+        if (counter == 100)
+            heavy = false;
+      //  while (counter < 100 )
+      //     {
+      //    ball1.transform.localScale += scaleChange;
+      //   }
+      //  if (heavy = true)
+      //  {
+      //       ball1.transform.localScale += scaleChange;
+      //  }
     }
 
     private void spawnBall2()
@@ -76,6 +123,8 @@ public class PowerUps : MonoBehaviour
 
         if (collider.gameObject.tag == "Ball")
         {
+            SoundManger.PlaySound("Balls");
+
             powerSpawned = true;
             Destroy(gameObject);
             if (gameObject.tag == "PU_double")
@@ -104,6 +153,9 @@ public class PowerUps : MonoBehaviour
 
             if (gameObject.tag == "PU_heavy")
             {
+                heavy = true;
+                print($"this is -----------  {heavy}");
+                scaleChange = new Vector3(-1.01f, -1.01f, -1.01f);
 
                 ball1.color = Color.grey;
                 ball1.GetComponent<Rigidbody2D>().sharedMaterial.bounciness = 0.1f;
@@ -113,6 +165,7 @@ public class PowerUps : MonoBehaviour
             {
 
                 ball1.color = Color.yellow;
+                isFire = true;
                 // Destroy(BallOpponent); // LATER
 
             }

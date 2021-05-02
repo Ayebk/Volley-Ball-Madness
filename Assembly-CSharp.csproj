@@ -57,11 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\C# Scripts\MiniMenu.cs" />
+    <Compile Include="Assets\C# Scripts\CountDown.cs" />
     <Compile Include="Assets\C# Scripts\Ball.cs" />
-    <Compile Include="Assets\C# Scripts\MainMenu.cs" />
-    <Compile Include="Assets\C# Scripts\Ground.cs" />
     <Compile Include="Assets\C# Scripts\PowerUps.cs" />
+    <Compile Include="Assets\C# Scripts\MainMenu.cs" />
+    <Compile Include="Assets\C# Scripts\SoundManger.cs" />
     <Compile Include="Assets\C# Scripts\Timer.cs" />
+    <Compile Include="Assets\C# Scripts\Ground.cs" />
+    <Compile Include="Assets\C# Scripts\Login.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -69,7 +72,10 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+     <None Include="Assets\Pictures\UIpack\Spritesheet\blueSheet.xml" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+     <None Include="Assets\Pictures\UIpack\Spritesheet\greenSheet.xml" />
+     <None Include="Assets\Pictures\UIpack\Spritesheet\yellowSheet.xml" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
      <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -77,8 +83,11 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+     <None Include="Assets\Pictures\UIpack\license.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+     <None Include="Assets\Pictures\UIpack\Spritesheet\redSheet.xml" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\Pictures\UIpack\Spritesheet\greySheet.xml" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />

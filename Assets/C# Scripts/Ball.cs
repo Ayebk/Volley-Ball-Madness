@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Ball : MonoBehaviour
 {
+
+
 
     public Vector3 _initialPosition;
     public bool _birdWasLaunched;
@@ -11,19 +14,15 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private float _launchPower = 500;
 
+
+
     /*
     LineRenderer linePrefab;
     private LineRenderer lr;
     private LineRenderer lr2;
-
-    void Start()
-    {
-        lr = Instantiate(linePrefab, transform);
-        lr2 = Instantiate(linePrefab, transform);
-
-     
-    }
     */
+
+
 
 
     public void Awake()
@@ -34,13 +33,7 @@ public class Ball : MonoBehaviour
     private void Update()
     {
 
-        Vector3 moveDirection = gameObject.transform.position;
-        if (moveDirection != Vector3.zero)
-        {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg * 10;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
-
+       
         /*
         lr = new GameObject().AddComponent<LineRenderer>();
         lr.SetPosition(1, _initialPosition);
@@ -90,6 +83,7 @@ public class Ball : MonoBehaviour
         _birdWasLaunched = true;
 
         GetComponent<LineRenderer>().enabled = false;
+        SoundManger.PlaySound("Fly");
 
 
     }
@@ -98,5 +92,6 @@ public class Ball : MonoBehaviour
     {
         Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = new Vector3(newPosition.x, newPosition.y);
+
     }
 }
