@@ -9,6 +9,7 @@ TagManager:
   - PU_double
   - PU_heavy
   - PU_kill
+  - TcpClientHandler
   layers:
   - Default
   - TransparentFX

@@ -7,36 +7,48 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
 
-    public Text highscore;
-    
-   
-    public void StartGame()
+    public UnityEngine.UI.Button FindAMatchButton;
+    public UnityEngine.UI.Button StatisticsButton;
+    public UnityEngine.UI.Button FriendListButton;
+    public UnityEngine.UI.Button SignOutButton;
+
+ 
+    public GameObject MainMenuCanvas;
+    public GameObject FindAMatchCanvas;
+    public GameObject FriendListCanvas;
+    public GameObject StatisticsCanvas;
+
+    void Start()
     {
+        FindAMatchButton.onClick.AddListener(DisplayFindAMatch);
+        FriendListButton.onClick.AddListener(DisplayFriendList);
+        StatisticsButton.onClick.AddListener(DisplayStatistics);
+        SignOutButton.onClick.AddListener(SignOut);
         
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-
     }
 
-     void Start()
+
+    void DisplayFindAMatch() 
     {
-
-     
-
-        Ground.BackToMain = true;
-
-
-        highscore.text = "Score : " + PlayerPrefs.GetInt("HighestScoreKey").ToString();
-
-
-
-
+        MainMenuCanvas.SetActive(false);
+        FindAMatchCanvas.SetActive(true);
     }
 
-
-    public void SingOut()
+    void DisplayFriendList() 
     {
-        SceneManager.LoadScene("LogIn");
-
-
+        MainMenuCanvas.SetActive(false);
+        FriendListCanvas.SetActive(true);
     }
+
+    void DisplayStatistics() 
+    {
+        MainMenuCanvas.SetActive(false);
+        StatisticsCanvas.SetActive(true);
+    }
+
+    void SignOut() 
+    {
+        SceneManager.LoadScene("Login");
+    }
+    
 }

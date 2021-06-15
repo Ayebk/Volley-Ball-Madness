@@ -74,6 +74,7 @@ public class PowerUps : MonoBehaviour
 
             // for the fire (place in untiy the fire particles in origin)///
             fireParticales.position = moveDirection;
+            ball1.GetComponent<Ball>().PowerUpType = "Killer";
             //
 
 
@@ -81,12 +82,9 @@ public class PowerUps : MonoBehaviour
         }
 
 
-        print($"this is -----------  {heavy}");
-
         if (heavy) 
         {
-            print($"yepp im here");
-            
+            ball1.GetComponent<Ball>().PowerUpType = "Heavy";
             scaleChange = new Vector3(0.003f, 0.003f, 0.000f);
             ball1.transform.localScale += scaleChange;
             counter++;
@@ -154,7 +152,6 @@ public class PowerUps : MonoBehaviour
             if (gameObject.tag == "PU_heavy")
             {
                 heavy = true;
-                print($"this is -----------  {heavy}");
                 scaleChange = new Vector3(-1.01f, -1.01f, -1.01f);
 
                 ball1.color = Color.grey;

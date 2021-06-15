@@ -8,6 +8,7 @@ public class Ground : MonoBehaviour
 {
     [SerializeField] private GameObject _cloudParticlePrefab;
 
+    public GameObject Camera;
     public Text Textscore;
     public float timer;
     bool Hit = false;
@@ -15,7 +16,6 @@ public class Ground : MonoBehaviour
     public int Score = 0;
     string currentScoreKey = "currentScore";
     string HighestScoreKey = "HighestScoreKey";
-
 
      void Start()
     {
@@ -42,6 +42,7 @@ public class Ground : MonoBehaviour
         {
             SoundManger.PlaySound("Ground");
             SoundManger.PlaySound("Score");
+            cameraShake(ball);
 
             BackToMain = false;
             Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
@@ -67,6 +68,20 @@ public class Ground : MonoBehaviour
  
         }
 
+    }
+
+    private void cameraShake(Ball ball) 
+    {
+        float shakeDuration;
+        switch (ball.PowerUpType) 
+        {
+            case "Heavy": { shakeDuration = 0.5f; } break;
+            case "Killer": { shakeDuration = 0.25f; } break;
+            default: shakeDuration = 0.25f; break;
+        }
+
+
+        Camera.GetComponent<CameraShake>().ShakeDuration = shakeDuration;
     }
 
 }
