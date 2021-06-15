@@ -13,6 +13,7 @@ public class Ball : MonoBehaviour
     public float _timeSettingAround;
     public string PowerUpType;
     public bool playerControls = false;
+    public bool BallDragging = false;
     public GameObject UdpClient;
     [SerializeField] private float _launchPower = 500;
 
@@ -32,6 +33,10 @@ public class Ball : MonoBehaviour
         {
             UdpClient.GetComponent<UdpClientHandler>().onBallPosition = onBallPositionDraggingReceived;
             UdpClient.GetComponent<UdpClientHandler>().onBallReleased = onBallShot;
+        }
+        else
+        {
+            StartCoroutine(DragCheckAndSend());
         }
     }
 
@@ -96,6 +101,7 @@ public class Ball : MonoBehaviour
     {
         if (playerControls)
         {
+            BallDragging = false;
             GetComponent<SpriteRenderer>().color = Color.white;
             Vector2 directionToInitialPosition = _initialPosition - transform.position;
             string ballDirection = "BALLDIR " + Player.GameRoomId + " " + directionToInitialPosition.x + " " + directionToInitialPosition.y;
@@ -104,7 +110,6 @@ public class Ball : MonoBehaviour
             _birdWasLaunched = true;
             GetComponent<LineRenderer>().enabled = false;
             SoundManger.PlaySound("Fly");
-
             UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballDirection,false);
         }
     }
@@ -115,8 +120,7 @@ public class Ball : MonoBehaviour
         {
             Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(newPosition.x, newPosition.y);
-            string ballPosition = "BALLPOS "+Player.GameRoomId+" " + transform.position.x + " " + transform.position.y;
-            //UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballPosition,true);
+            BallDragging = true;
         }
 
     }
@@ -138,5 +142,16 @@ public class Ball : MonoBehaviour
         SoundManger.PlaySound("Fly");
     }
 
-
+    IEnumerator DragCheckAndSend() 
+    {
+        while (true)
+        {
+            if (BallDragging)
+            {
+                string ballPosition = "BALLPOS " + Player.GameRoomId + " " + transform.position.x + " " + transform.position.y;
+                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballPosition, true);
+            }
+            yield return new WaitForSeconds(.1f);
+        }
+    }
 }
