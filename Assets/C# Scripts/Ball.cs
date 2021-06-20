@@ -1,4 +1,5 @@
 using Assets.C__Scripts;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,10 +38,12 @@ public class Ball : MonoBehaviour
             UdpClient.GetComponent<UdpClientHandler>().onBallReleased = onBallShot;
             UdpClient.GetComponent<UdpClientHandler>().onBallCollision = onBallCollision;
             UdpClient.GetComponent<UdpClientHandler>().onBallReset = onBallReset;
+            UdpClient.GetComponent<UdpClientHandler>().onBallCurrentPosition = onBallCurrentPosition;
         }
         else
         {
             StartCoroutine(DragCheckAndSend());
+            StartCoroutine(CheckCurrentAndSend());
         }
         InitialSize = transform.localScale;
     }
@@ -130,7 +133,6 @@ public class Ball : MonoBehaviour
 
     }
 
-    
     /*
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -150,17 +152,38 @@ public class Ball : MonoBehaviour
     }
     */
 
+
     private void OnCollisionExit2D(Collision2D collision)
     {
+        //Ball ball = collision.collider.GetComponent<Ball>();
         if (playerControls)
         {
-            Vector3 position = transform.position;
-            Vector2 velocity = transform.GetComponent<Rigidbody2D>().velocity;
-            float rotation = transform.GetComponent<Rigidbody2D>().rotation;
-            string ballCollision = "BALLCOL " + Player.GameRoomId + " " + position.x + " " + position.y;
-            ballCollision += " " + velocity.x + " " + velocity.y;
-            ballCollision += " " + rotation;
-            UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
+            /*
+            if (ball != null && ball._birdWasLaunched)
+            {
+                Vector3 positionBallOne = transform.position;
+                Vector2 velocityBallOne = transform.GetComponent<Rigidbody2D>().velocity;
+                float rotationBallOne = transform.GetComponent<Rigidbody2D>().rotation;
+                string ballCollision = "BALLHIT " + Player.GameRoomId + " " + positionBallOne.x + " " + positionBallOne.y;
+                ballCollision += " " + velocityBallOne.x + " " + velocityBallOne.y;
+                ballCollision += " " + rotationBallOne;
+
+                Vector3 positionBallTwo = ball.transform.position;
+                Vector2 velocityBallTwo = transform.GetComponent<Rigidbody2D>().velocity;
+                float rotationBallTwo = transform.GetComponent<Rigidbody2D>().rotation;
+                ballCollision += " " + positionBallTwo.x + " " + positionBallTwo.y;
+                ballCollision += " " + velocityBallTwo.x + " " + velocityBallTwo.y;
+                ballCollision += " " + rotationBallTwo;
+                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
+            }
+            */
+                Vector3 position = transform.position;
+                Vector2 velocity = transform.GetComponent<Rigidbody2D>().velocity;
+                float rotation = transform.GetComponent<Rigidbody2D>().rotation;
+                string ballCollision = "BALLCOL " + Player.GameRoomId + " " + position.x + " " + position.y;
+                ballCollision += " " + velocity.x + " " + velocity.y;
+                ballCollision += " " + rotation;
+                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
         }
     }
 
@@ -168,7 +191,7 @@ public class Ball : MonoBehaviour
     {
         string[] splitMessage = position.Split();
         Vector3 ballPosition = new Vector3(float.Parse(splitMessage[1]), float.Parse(splitMessage[2]));
-        StartCoroutine(MoveToPositionInTime(ballPosition));
+        StartCoroutine(MoveToPositionInTime(ballPosition, 0.095f));
     }
 
     private void onBallShot(string info) 
@@ -193,6 +216,25 @@ public class Ball : MonoBehaviour
         Debug.Log(info);
     }
 
+    public void onBallCurrentPosition(string info)
+    {
+        string[] splitMessage = info.Split();
+        Vector2 position = new Vector2(float.Parse(splitMessage[1]), float.Parse(splitMessage[2]));
+        Vector2 velocity = new Vector2(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]));
+
+        if (Vector2.Distance(position, transform.position) > 0.2f)
+        {
+            StartCoroutine(MoveToPositionInTime(position, 0.02f));
+            StartCoroutine(SetVelocityInTime(velocity, 0.02f));
+            transform.GetComponent<Rigidbody2D>().rotation = float.Parse(splitMessage[5]);
+            
+        }
+        
+    
+
+        Debug.Log(info);
+    }
+
     public void ResetBall(bool SendCommand)
     {
         Hit = false;
@@ -206,6 +248,40 @@ public class Ball : MonoBehaviour
         {
             string resetBall = "BALLRESET " + Player.GameRoomId;
             UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(resetBall, false);
+        }
+    }
+
+    /*this players' ball state will be in the first data set
+     * the second data set is the remote players ball state
+     * SO [This Players Data Set] [Remote Players Data Set]
+    */
+    /// <summary>
+    /// handler for the ball collision with one another
+    /// syncs the current ball states if this handler was fired 
+    /// by the UdpClientHandler delegate
+    /// </summary>
+    /// <param name="info"></param>
+    private void onBallCollisionWithOther(string info)
+    {
+        //handling in case this is this players ball
+        if (playerControls)
+        {
+            string[] splitMessage = info.Split();
+            Vector2 position = new Vector2(float.Parse(splitMessage[1]), float.Parse(splitMessage[2]));
+            Vector2 velocity = new Vector2(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]));
+            transform.position = position;
+            transform.GetComponent<Rigidbody2D>().velocity = velocity;
+            transform.GetComponent<Rigidbody2D>().rotation = float.Parse(splitMessage[5]);
+        }
+        //handling in case this is the remote players ball
+        else
+        {
+            string[] splitMessage = info.Split();
+            Vector2 position = new Vector2(float.Parse(splitMessage[6]), float.Parse(splitMessage[7]));
+            Vector2 velocity = new Vector2(float.Parse(splitMessage[8]), float.Parse(splitMessage[9]));
+            transform.position = position;
+            transform.GetComponent<Rigidbody2D>().velocity = velocity;
+            transform.GetComponent<Rigidbody2D>().rotation = float.Parse(splitMessage[10]);
         }
     }
 
@@ -227,15 +303,44 @@ public class Ball : MonoBehaviour
         }
     }
 
-    IEnumerator MoveToPositionInTime(Vector3 destination) 
+    IEnumerator CheckCurrentAndSend()
     {
-        float timeToArrive = 0.095f;
+        while (true)
+        {
+            if (_birdWasLaunched)
+            {
+                Vector3 position = transform.position;
+                Vector2 velocity = transform.GetComponent<Rigidbody2D>().velocity;
+                float rotation = transform.GetComponent<Rigidbody2D>().rotation;
+                string ballCollision = "BALLCU " + Player.GameRoomId + " " + position.x + " " + position.y;
+                ballCollision += " " + velocity.x + " " + velocity.y;
+                ballCollision += " " + rotation;
+                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
+            }
+            yield return new WaitForSeconds(.05f);
+        }
+    }
+
+    IEnumerator MoveToPositionInTime(Vector3 destination,float timeToArrive) 
+    {
         float timePercentage = 0f;
         Vector3 startPosition = transform.position;
         while (timePercentage < 1)
         {
             timePercentage += Time.deltaTime / timeToArrive;
             transform.position = Vector3.Lerp(startPosition, destination, timePercentage);
+            yield return null;
+        }
+    }
+
+    IEnumerator SetVelocityInTime(Vector3 velocity, float timeToArrive)
+    {
+        float timePecentage = 0f;
+        Vector2 startVelocity = transform.GetComponent<Rigidbody2D>().velocity;
+        while (timePecentage < 1)
+        {
+            timePecentage += Time.deltaTime / timeToArrive;
+            transform.GetComponent<Rigidbody2D>().velocity = Vector2.Lerp(startVelocity, velocity, timePecentage);
             yield return null;
         }
     }

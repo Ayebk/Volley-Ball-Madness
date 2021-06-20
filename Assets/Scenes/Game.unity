@@ -5640,7 +5640,7 @@ Transform:
   m_GameObject: {fileID: 198416705}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8.46, y: -1.82, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -5681,6 +5681,7 @@ MonoBehaviour:
   PowerUpType: 
   playerControls: 0
   BallDragging: 0
+  Hit: 0
   UdpClient: {fileID: 0}
   _launchPower: 450
 --- !u!120 &198416711
@@ -14969,6 +14970,7 @@ MonoBehaviour:
   PowerUpType: 
   playerControls: 0
   BallDragging: 0
+  Hit: 0
   UdpClient: {fileID: 0}
   _launchPower: 450
 --- !u!58 &2045613799
@@ -15068,7 +15070,7 @@ Transform:
   m_GameObject: {fileID: 2045613796}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -8.41, y: -1.82, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 21
