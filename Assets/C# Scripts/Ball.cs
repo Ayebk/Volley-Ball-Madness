@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
 {
 
 
+    public Vector3 InitialSize;
     public int ControlingPlayer = 0;
     public Vector3 _initialPosition;
     public bool _birdWasLaunched;
@@ -14,6 +15,7 @@ public class Ball : MonoBehaviour
     public string PowerUpType;
     public bool playerControls = false;
     public bool BallDragging = false;
+    public bool Hit = false;
     public GameObject UdpClient;
     [SerializeField] private float _launchPower = 500;
 
@@ -33,11 +35,14 @@ public class Ball : MonoBehaviour
         {
             UdpClient.GetComponent<UdpClientHandler>().onBallPosition = onBallPositionDraggingReceived;
             UdpClient.GetComponent<UdpClientHandler>().onBallReleased = onBallShot;
+            UdpClient.GetComponent<UdpClientHandler>().onBallCollision = onBallCollision;
+            UdpClient.GetComponent<UdpClientHandler>().onBallReset = onBallReset;
         }
         else
         {
             StartCoroutine(DragCheckAndSend());
         }
+        InitialSize = transform.localScale;
     }
 
     public void Awake()
@@ -124,11 +129,46 @@ public class Ball : MonoBehaviour
         }
 
     }
+
+    
+    /*
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+       
+        
+        if (playerControls)
+        {
+            Vector3 position = transform.position;
+            Vector2 velocity = transform.GetComponent<Rigidbody2D>().velocity;
+            float rotation = transform.GetComponent<Rigidbody2D>().rotation;
+            string ballCollision = "BALLCOL " + Player.GameRoomId + " " + position.x + " " + position.y;
+            ballCollision += " " + velocity.x + " " + velocity.y;
+            ballCollision += " " + rotation;
+            UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
+        }
+        
+    }
+    */
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (playerControls)
+        {
+            Vector3 position = transform.position;
+            Vector2 velocity = transform.GetComponent<Rigidbody2D>().velocity;
+            float rotation = transform.GetComponent<Rigidbody2D>().rotation;
+            string ballCollision = "BALLCOL " + Player.GameRoomId + " " + position.x + " " + position.y;
+            ballCollision += " " + velocity.x + " " + velocity.y;
+            ballCollision += " " + rotation;
+            UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballCollision, false);
+        }
+    }
+
     private void onBallPositionDraggingReceived(string position)
     {
         string[] splitMessage = position.Split();
         Vector3 ballPosition = new Vector3(float.Parse(splitMessage[1]), float.Parse(splitMessage[2]));
-        transform.position = ballPosition;
+        StartCoroutine(MoveToPositionInTime(ballPosition));
     }
 
     private void onBallShot(string info) 
@@ -142,6 +182,38 @@ public class Ball : MonoBehaviour
         SoundManger.PlaySound("Fly");
     }
 
+    public void onBallCollision(string info)
+    {
+        string[] splitMessage = info.Split();
+        Vector2 position = new Vector2(float.Parse(splitMessage[1]), float.Parse(splitMessage[2]));
+        Vector2 velocity = new Vector2(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]));
+        transform.position = position;
+        transform.GetComponent<Rigidbody2D>().velocity = velocity;
+        transform.GetComponent<Rigidbody2D>().rotation = float.Parse(splitMessage[5]);
+        Debug.Log(info);
+    }
+
+    public void ResetBall(bool SendCommand)
+    {
+        Hit = false;
+        transform.position = _initialPosition;
+        transform.localScale = InitialSize;
+        transform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        transform.GetComponent<Rigidbody2D>().rotation = 0;
+        _birdWasLaunched = false;
+        GetComponent<Rigidbody2D>().gravityScale = 0;
+        if (SendCommand)
+        {
+            string resetBall = "BALLRESET " + Player.GameRoomId;
+            UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(resetBall, false);
+        }
+    }
+
+    public void onBallReset(string info)
+    {
+        ResetBall(false);
+    }
+
     IEnumerator DragCheckAndSend() 
     {
         while (true)
@@ -149,9 +221,22 @@ public class Ball : MonoBehaviour
             if (BallDragging)
             {
                 string ballPosition = "BALLPOS " + Player.GameRoomId + " " + transform.position.x + " " + transform.position.y;
-                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballPosition, true);
+                UdpClient.GetComponent<UdpClientHandler>().SendUdpMessage(ballPosition, false);
             }
             yield return new WaitForSeconds(.1f);
+        }
+    }
+
+    IEnumerator MoveToPositionInTime(Vector3 destination) 
+    {
+        float timeToArrive = 0.095f;
+        float timePercentage = 0f;
+        Vector3 startPosition = transform.position;
+        while (timePercentage < 1)
+        {
+            timePercentage += Time.deltaTime / timeToArrive;
+            transform.position = Vector3.Lerp(startPosition, destination, timePercentage);
+            yield return null;
         }
     }
 }

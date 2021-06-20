@@ -107,7 +107,7 @@ public class TcpClientHandler : MonoBehaviour
 
     public void ConnectToServer()
     {
-        tcpClient = new TcpClient("79.179.155.1", 2000);
+        tcpClient = new TcpClient("10.0.0.9", 2000);
         stream = tcpClient.GetStream();
     }
 }

@@ -1,3 +1,4 @@
+using Assets.C__Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,9 +12,9 @@ public class Ground : MonoBehaviour
     public GameObject Camera;
     public Text Textscore;
     public float timer;
-    bool Hit = false;
     public static bool BackToMain ;
     public int Score = 0;
+    public int PlayerZone;
     string currentScoreKey = "currentScore";
     string HighestScoreKey = "HighestScoreKey";
 
@@ -21,7 +22,6 @@ public class Ground : MonoBehaviour
     {
         SoundManger.PlaySound("Ready");
         SoundManger.PlaySound("Game");
-
 
         // GetComponent<Timer>().timerIsRunning = true;
         if (BackToMain)
@@ -38,34 +38,36 @@ public class Ground : MonoBehaviour
     public IEnumerator OnCollisionEnter2D(Collision2D collision)
     {
         Ball ball = collision.collider.GetComponent<Ball>();
-        if (ball != null && Hit == false)
+        if (ball != null && ball.Hit == false && ball._birdWasLaunched)
         {
-            SoundManger.PlaySound("Ground");
-            SoundManger.PlaySound("Score");
-            cameraShake(ball);
-
-            BackToMain = false;
-            Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
-            Score = Score + 1;
-            PlayerPrefs.SetInt(currentScoreKey, Score);
-            if (PlayerPrefs.GetInt(HighestScoreKey) < PlayerPrefs.GetInt(currentScoreKey))
+            if (PlayerZone != ball.ControlingPlayer )
             {
-                PlayerPrefs.SetInt(HighestScoreKey, Score);
+                SoundManger.PlaySound("Ground");
+                SoundManger.PlaySound("Score");
+                cameraShake(ball);
+                BackToMain = false;
+                Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
+                Score = Score + 1;
+                PlayerPrefs.SetInt(currentScoreKey, Score);
+                if (PlayerPrefs.GetInt(HighestScoreKey) < PlayerPrefs.GetInt(currentScoreKey))
+                {
+                    PlayerPrefs.SetInt(HighestScoreKey, Score);
+                }
+                PlayerPrefs.Save();
+                Textscore.text = "Score: " + Score.ToString();
+                ball.Hit = true;
+                yield return new WaitForSeconds(2.0f);
+                ball.ResetBall(true);
             }
-            PlayerPrefs.Save();
-            Textscore.text = "Score: " + Score.ToString();
-            Hit = true;
-            yield return new WaitForSeconds(2.0f);
+            else
+            {
+                SoundManger.PlaySound("Ground");
+                Instantiate(_cloudParticlePrefab, ball.transform.position, Quaternion.LookRotation(Vector3.up));
+                ball.Hit = true;
+                yield return new WaitForSeconds(2.0f);
+                ball.ResetBall(true);
+            }
 
-
-
-
-            string currentSceneName = SceneManager.GetActiveScene().name;
-
-       //     timer = GetComponent<Timer>().timeRemaining;
-        //    GetComponent<Timer>().timerIsRunning = true ;
-            SceneManager.LoadScene(currentSceneName);
- 
         }
 
     }

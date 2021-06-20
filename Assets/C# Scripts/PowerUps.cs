@@ -91,14 +91,6 @@ public class PowerUps : MonoBehaviour
         }
         if (counter == 100)
             heavy = false;
-      //  while (counter < 100 )
-      //     {
-      //    ball1.transform.localScale += scaleChange;
-      //   }
-      //  if (heavy = true)
-      //  {
-      //       ball1.transform.localScale += scaleChange;
-      //  }
     }
 
     private void spawnBall2()

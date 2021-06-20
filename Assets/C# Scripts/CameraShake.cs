@@ -5,7 +5,7 @@ using UnityEngine;
 
 /*
  * This class is used to create the 
- * camera shake effect
+ * camera shake effect and the phone vibration
  */
 public class CameraShake : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class CameraShake : MonoBehaviour
     public float ShakeAmount = 0.1f;
     public float DecreaseFactor = 1.0f;
     public Vector3 OriginalPosition;
+    public bool PhoneVibrating = false;
 
     // Awake function
     private void Awake()
@@ -42,13 +43,17 @@ public class CameraShake : MonoBehaviour
         if (ShakeDuration > 0)
         {
             CameraTransform.localPosition = OriginalPosition + Random.insideUnitSphere * ShakeAmount;
-
             ShakeDuration -= Time.deltaTime * DecreaseFactor;
+            if (!PhoneVibrating)
+            {
+                Handheld.Vibrate();
+            }
         }
         else
         {
             ShakeDuration = 0f;
             CameraTransform.localPosition = OriginalPosition;
+            PhoneVibrating = false;
         }
         
     }

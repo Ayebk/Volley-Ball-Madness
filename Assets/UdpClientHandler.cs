@@ -14,7 +14,7 @@ public class UdpClientHandler : MonoBehaviour
     public static UdpClient UdpClient;
     public static IPEndPoint RemoteEndPoint;
     public static Byte[] receiveBytes;
-    public static string HostIp = "79.179.155.1";
+    public static string HostIp = "10.0.0.9";
     public static Int32 HostPort = 65000;
     public static bool ConnectedFlag = false;
     public static bool Connect = false;
@@ -25,6 +25,8 @@ public class UdpClientHandler : MonoBehaviour
     public OnTimeReceived onTimeReceived;
     public OnBallPosition onBallPosition;
     public OnBallPosition onBallReleased;
+    public OnBallPosition onBallCollision;
+    public OnBallPosition onBallReset;
 
     private void Awake()
     {
@@ -116,6 +118,7 @@ public class UdpClientHandler : MonoBehaviour
 
     private void CommandHandler(string command)
     {
+        Debug.Log(command);
         if (command.StartsWith("TIME"))
         {
             if (InGameMode)
@@ -140,6 +143,20 @@ public class UdpClientHandler : MonoBehaviour
             if (InGameMode)
             {
                 onBallReleased(command);
+            }
+        }
+        else if (command.StartsWith("BALLCOL"))
+        {
+            if (InGameMode)
+            {
+                onBallCollision(command);
+            }
+        }
+        else if (command.StartsWith("BALLRESET"))
+        {
+            if (InGameMode)
+            {
+                onBallReset(command);
             }
         }
     }
