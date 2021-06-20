@@ -14,7 +14,7 @@ public class UdpClientHandler : MonoBehaviour
     public static UdpClient UdpClient;
     public static IPEndPoint RemoteEndPoint;
     public static Byte[] receiveBytes;
-    public static string HostIp = "10.0.0.9";
+    public static string HostIp = "79.179.155.1";
     public static Int32 HostPort = 65000;
     public static bool ConnectedFlag = false;
     public static bool Connect = false;
